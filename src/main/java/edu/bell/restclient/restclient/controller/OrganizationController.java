@@ -1,7 +1,9 @@
 package edu.bell.restclient.restclient.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.bell.restclient.restclient.config.Message;
 import edu.bell.restclient.restclient.config.RabbitMQConfig;
 import edu.bell.restclient.restclient.dto.request.OrganisationDtoRequest;
 import edu.bell.restclient.restclient.dto.request.OrganizationSaveInDto;
@@ -22,6 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/organization")
@@ -35,10 +40,17 @@ public class OrganizationController {
 
     private final ObjectMapper objectMapper;
 
+    private int messageId;
+
+    private HashMap<Integer, Object> storage;
+
+    private Logger logger = Logger.getLogger(OrganizationController.class.getName());
+
     public OrganizationController(RestTemplate template, RabbitTemplate rabbitTemplate, ObjectMapper objectMapper) {
         this.template = template;
         this.rabbitTemplate = rabbitTemplate;
         this.objectMapper = objectMapper;
+        storage = new HashMap<>();
     }
 
     @GetMapping("{id}")
@@ -49,9 +61,22 @@ public class OrganizationController {
 
     @GetMapping("/queue/{id}")
     public ResponseDto getOrganizationByIdQueue(@PathVariable int id) throws JsonProcessingException {
-        rabbitTemplate.convertAndSend(RabbitMQConfig.NAME_QUEUE_GET_ORGANIZATION,objectMapper.writeValueAsString(id));
         ResponseDto responseDto = new ResponseDto();
-        responseDto.setData(new SuccessDto());
+        if (storage.containsKey(id)) {
+            responseDto.setData(storage.get(id));
+            return responseDto;
+        }
+
+        messageId++;
+        Message message = new Message();
+        message.setId(messageId);
+        message.setMethod("get");
+        message.setBody(id);
+
+        rabbitTemplate.convertAndSend(RabbitMQConfig.NAME_QUEUE_GET_ORGANIZATION, objectMapper.writeValueAsString(message));
+
+        SuccessDto successDto = getSuccessDto(messageId);
+        responseDto.setData(successDto);
         return responseDto;
     }
 
@@ -60,6 +85,22 @@ public class OrganizationController {
         ResponseEntity<ResponseDto> responseDto
                 = template.postForEntity(URL + "list", organisationDTO, ResponseDto.class);
         return responseDto.getBody();
+    }
+
+    @PostMapping("queue/list")
+    public ResponseDto getListOrganizationQueue(@RequestBody OrganisationDtoRequest organisationDTO) throws JsonProcessingException {
+        messageId++;
+        Message message = new Message();
+        message.setId(messageId);
+        message.setMethod("list");
+        message.setBody(organisationDTO);
+
+        rabbitTemplate.convertAndSend(RabbitMQConfig.NAME_QUEUE_GET_ORGANIZATION, objectMapper.writeValueAsString(message));
+
+        ResponseDto responseDto = new ResponseDto();
+        SuccessDto successDto = getSuccessDto(messageId);
+        responseDto.setData(successDto);
+        return responseDto;
     }
 
     @PostMapping("save")
@@ -84,10 +125,17 @@ public class OrganizationController {
         return responseDto;
     }
 
-
     @RabbitListener(queues = RabbitMQConfig.NAME_QUEUE_RETURN_ORGANIZATION)
     public void getOrganizationFromQueue(String message) throws JsonProcessingException {
-        OrganizationOutDto organizationOutDto = objectMapper.readValue(message, OrganizationOutDto.class);
-        System.out.println(organizationOutDto);
+        JsonNode jsonNode = objectMapper.readTree(message);
+        Object organizationOutDto = objectMapper.treeToValue(jsonNode.get("body"), Object.class);
+        storage.put(jsonNode.get("id").asInt(), organizationOutDto);
+        logger.log(Level.INFO, "Из очереди добавлен объект: " + organizationOutDto.toString());
+    }
+
+    private SuccessDto getSuccessDto(int messageId) {
+        SuccessDto successDto = new SuccessDto();
+        successDto.setResult("Жди ответ по запросу /api/organization/queue/" + messageId);
+        return successDto;
     }
 }

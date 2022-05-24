@@ -26,6 +26,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue queueReturnOrganization() {
+        return new Queue(NAME_QUEUE_RETURN_ORGANIZATION);
+    }
+
+    @Bean
     public CachingConnectionFactory connectionFactory() {
         return new CachingConnectionFactory(HOST_NAME);
     }
