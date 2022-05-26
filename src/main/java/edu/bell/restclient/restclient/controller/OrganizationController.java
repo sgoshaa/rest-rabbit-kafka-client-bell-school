@@ -3,17 +3,15 @@ package edu.bell.restclient.restclient.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.bell.restclient.restclient.config.Message;
+import edu.bell.restclient.restclient.config.MessageDto;
 import edu.bell.restclient.restclient.config.RabbitMQConfig;
 import edu.bell.restclient.restclient.dto.request.OrganisationDtoRequest;
 import edu.bell.restclient.restclient.dto.request.OrganizationSaveInDto;
 import edu.bell.restclient.restclient.dto.request.OrganizationUpdateInDto;
-import edu.bell.restclient.restclient.dto.response.OrganizationOutDto;
 import edu.bell.restclient.restclient.dto.response.ResponseDto;
 import edu.bell.restclient.restclient.dto.response.SuccessDto;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,8 +53,7 @@ public class OrganizationController {
 
     @GetMapping("{id}")
     public ResponseDto getOrganizationById(@PathVariable int id) {
-        ResponseDto forObject = template.getForObject(URL + id, ResponseDto.class);
-        return forObject;
+        return template.getForObject(URL + id, ResponseDto.class);
     }
 
     @GetMapping("/queue/{id}")
@@ -73,7 +70,7 @@ public class OrganizationController {
 
         messageId++;
         storage.put(messageId, null);
-        Message message = new Message();
+        MessageDto message = new MessageDto();
         message.setId(messageId);
         message.setMethod("get");
         message.setBody(id);
@@ -96,7 +93,7 @@ public class OrganizationController {
     public ResponseDto getListOrganizationQueue(@RequestBody OrganisationDtoRequest organisationDTO) throws JsonProcessingException {
         messageId++;
         storage.put(messageId,null);
-        Message message = new Message();
+        MessageDto message = new MessageDto();
         message.setId(messageId);
         message.setMethod("list");
         message.setBody(organisationDTO);
