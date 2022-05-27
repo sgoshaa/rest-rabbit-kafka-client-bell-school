@@ -67,14 +67,13 @@ public class OfficeKafkaController {
         return successDto;
     }
 
-    @KafkaListener(groupId = "groupId", topics = KafkaTopicConfig.QUEUE_RETURN_OFFICE)
-    public void getOfficeFromQueue(String msg) throws JsonProcessingException {
-        log.log(Level.INFO, "Из очереди получен объект:" + msg);
-        MessageDto messageFromQueue = objectMapper.readValue(msg, MessageDto.class);
+    @KafkaListener(groupId = "groupId",
+            topics = KafkaTopicConfig.QUEUE_RETURN_OFFICE,
+            containerFactory = "listenerContainerFactory")
+    public void getOfficeFromQueue(MessageDto messageFromQueue) {
+        log.log(Level.INFO, "Из очереди получен объект:" + messageFromQueue);
         Object body = messageFromQueue.getBody();
         storage.put(messageFromQueue.getId(), body);
         log.log(Level.INFO, "В хранилище добавлен объект: " + body);
     }
-
-
 }

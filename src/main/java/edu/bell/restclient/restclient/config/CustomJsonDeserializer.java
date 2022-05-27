@@ -1,19 +1,21 @@
 package edu.bell.restclient.restclient.config;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.bell.restclient.restclient.dto.response.OfficeOutDto;
 import lombok.extern.log4j.Log4j2;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.logging.log4j.Level;
+import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Log4j2
-public class CustomDeserializer implements Deserializer<MessageDto> {
+public class CustomJsonDeserializer implements Deserializer<MessageDto> {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
@@ -22,16 +24,17 @@ public class CustomDeserializer implements Deserializer<MessageDto> {
 
     @Override
     public MessageDto deserialize(String topic, byte[] data) {
+        MessageDto messageDto = null;
         try {
             if (data == null) {
                 log.log(Level.INFO, "Null received at deserializing");
                 return null;
             }
-            log.log(Level.INFO, "Deserializing...");
-            return objectMapper.readValue(new String(data, "UTF-8"), MessageDto.class);
+            messageDto = objectMapper.readValue(new String(data, "UTF-8"), MessageDto.class);
         } catch (Exception e) {
             throw new SerializationException("Error when deserializing byte[] to MessageDto");
         }
+        return messageDto;
     }
 
     @Override
@@ -41,6 +44,6 @@ public class CustomDeserializer implements Deserializer<MessageDto> {
 
     @Override
     public void close() {
-        Deserializer.super.close();
+
     }
 }
