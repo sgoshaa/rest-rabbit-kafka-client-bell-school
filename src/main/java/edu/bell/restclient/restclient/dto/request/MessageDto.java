@@ -1,4 +1,4 @@
-package edu.bell.restclient.restclient.config;
+package edu.bell.restclient.restclient.dto.request;
 
 
 import lombok.Getter;

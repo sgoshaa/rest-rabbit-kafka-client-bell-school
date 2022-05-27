@@ -1,15 +1,13 @@
 package edu.bell.restclient.restclient.config;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.bell.restclient.restclient.dto.request.MessageDto;
 import lombok.extern.log4j.Log4j2;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.logging.log4j.Level;
-import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Log4j2
