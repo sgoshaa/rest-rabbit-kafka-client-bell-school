@@ -4,6 +4,7 @@ import edu.bell.restclient.restclient.dto.request.OfficeInListDto;
 import edu.bell.restclient.restclient.dto.request.OfficeInSaveDto;
 import edu.bell.restclient.restclient.dto.request.OfficeInUpdateDto;
 import edu.bell.restclient.restclient.dto.response.ResponseDto;
+import edu.bell.restclient.restclient.service.RestOfficeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,36 +20,29 @@ import javax.validation.Valid;
 @RequestMapping("/api/office/")
 public class OfficeController {
 
-    private final String URL = "http://localhost:8080/api/office/";
-    private final RestTemplate template;
+    private final RestOfficeService restOfficeService;
 
-    public OfficeController(RestTemplate template) {
-        this.template = template;
+    public OfficeController(RestOfficeService restOfficeService) {
+        this.restOfficeService = restOfficeService;
     }
 
     @GetMapping("{id}")
     public ResponseDto getOfficeById(@PathVariable Integer id) {
-        return template.getForObject(URL + id, ResponseDto.class);
+        return restOfficeService.getOfficeById(id);
     }
 
     @PostMapping("save")
     public ResponseDto saveOffice(@Valid @RequestBody OfficeInSaveDto office) {
-        ResponseEntity<ResponseDto> responseDtoResponseEntity = template
-                .postForEntity(URL + "save", office, ResponseDto.class);
-        return responseDtoResponseEntity.getBody();
+        return restOfficeService.saveOffice(office);
     }
 
     @PostMapping("list")
     public ResponseDto getListOfficeByRequest(@Valid @RequestBody OfficeInListDto office) {
-        ResponseEntity<ResponseDto> responseDtoResponseEntity = template
-                .postForEntity(URL + "list", office, ResponseDto.class);
-        return responseDtoResponseEntity.getBody();
+        return restOfficeService.getListOfficeByRequest(office);
     }
 
     @PostMapping("update")
     public ResponseDto updateOffice(@Valid @RequestBody OfficeInUpdateDto officeInUpdateDto) {
-        ResponseEntity<ResponseDto> responseDtoResponseEntity = template
-                .postForEntity(URL + "update", officeInUpdateDto, ResponseDto.class);
-        return responseDtoResponseEntity.getBody();
+       return restOfficeService.updateOffice(officeInUpdateDto);
     }
 }
