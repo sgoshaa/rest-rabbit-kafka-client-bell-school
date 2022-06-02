@@ -5,14 +5,12 @@ import edu.bell.restclient.restclient.dto.request.OfficeInSaveDto;
 import edu.bell.restclient.restclient.dto.request.OfficeInUpdateDto;
 import edu.bell.restclient.restclient.dto.response.ResponseDto;
 import edu.bell.restclient.restclient.service.RestOfficeService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 
