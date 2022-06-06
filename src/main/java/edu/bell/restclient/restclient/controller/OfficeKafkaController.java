@@ -30,7 +30,7 @@ public class OfficeKafkaController {
 
     @Operation(summary = "Получение офиса по id", description = "Позволяет получить офис по id, используя kafka")
     @GetMapping("{id}")
-    public ResponseDto getOfficeById(@PathVariable @Parameter(
+    public ResponseDto getOfficeByIdKafka(@PathVariable @Parameter(
             description = "Уникальный идентификатор офиса",
             example = "101") Integer id) {
         return kafkaOfficeService.getOfficeById(id);
@@ -39,19 +39,19 @@ public class OfficeKafkaController {
 
     @Operation(summary = "Сохранение нового офиса", description = "Сохраняет новый офис в БД")
     @PostMapping("save")
-    public ResponseDto saveOffice(@Valid @RequestBody OfficeInSaveDto office) {
+    public ResponseDto saveOfficeKafka(@Valid @RequestBody OfficeInSaveDto office) {
         return kafkaOfficeService.saveOffice(office);
     }
 
     @Operation(summary = "Поиск офиса по фильтру", description = "Позволяет искать офис по нескольким параметрам")
     @PostMapping("list")
-    public ResponseDto getListOfficesByRequest(@Valid @RequestBody OfficeInListDto office) {
+    public ResponseDto getListOfficesByRequestKafka(@Valid @RequestBody OfficeInListDto office) {
         return kafkaOfficeService.getListOfficeByRequest(office);
     }
 
     @Operation(summary = "Обновление офиса", description = "Обновляет офис в БД")
     @PostMapping("update")
-    public ResponseDto updateOffice(@Valid @RequestBody OfficeInUpdateDto officeInUpdateDto) {
+    public ResponseDto updateOfficeKafka(@Valid @RequestBody OfficeInUpdateDto officeInUpdateDto) {
         return kafkaOfficeService.updateOffice(officeInUpdateDto);
     }
 }

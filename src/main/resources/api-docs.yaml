@@ -1,0 +1,528 @@
+openapi: 3.0.1
+info:
+  title: Rest client система api
+  contact:
+    name: Игорь
+    email: sgoshaa@yandex.ru
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081
+    description: Generated server url
+tags:
+  - name: Контроллер организации
+    description: Позволяет работать с сущностью организация
+  - name: Контроллер rabbitMQ для организации
+    description: Позволяет работать с сущностью организация через очередь RabbitMQ
+  - name: Офис контроллер
+    description: Позволяет работать с сущностью офис
+  - name: Kafka Офис контроллер
+    description: Позволяет работать с сущностью офис через kafka контроллер
+paths:
+  /api/organization/{id}:
+    get:
+      tags:
+        - Контроллер организации
+      summary: Получение организации по id
+      description: Позволяет получить организацию по id
+      operationId: getOrganizationById
+      parameters:
+        - name: id
+          in: path
+          description: Уникальный идентификатор
+          required: true
+          schema:
+            type: integer
+            format: int32
+          example: 101
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/organization/save:
+    post:
+      tags:
+        - Контроллер организации
+      summary: Сохранение новой организации
+      description: Позволяет сохранить новую организацию в БД
+      operationId: saveOrganization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationSaveInDto'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/organization/list:
+    post:
+      tags:
+        - Контроллер организации
+      summary: Поиск списка организаций по фильтру
+      description: Позволяет найти список организаций по нескольким параметрам
+      operationId: getListOrganization
+      requestBody:
+        content:
+          applacation/json:
+            schema:
+              $ref: '#/components/schemas/OrganisationDtoRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/organization/update:
+    post:
+      tags:
+        - Контроллер организации
+      summary: Обновление организации
+      description: Позволяет обновить организацию
+      operationId: updateOrganization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationUpdateInDto'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/organization/queue/{id}:
+    get:
+      tags:
+        - Контроллер rabbitMQ для организации
+      summary: Поиск организации по id, запрос отправляется в очередь
+      description: Позволяет получать организацию по id
+      operationId: getOrganizationByIdQueue
+      parameters:
+        - name: id
+          in: path
+          description: Уникальный идентификатор
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 101
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/organization/queue/list:
+    post:
+      tags:
+        - Контроллер rabbitMQ для организации
+      summary: Поиск организаций по нескольким параметрам
+      description: Позволяет искать организации по нескольким параметрам , запрос ложиться в очередь
+      operationId: getListOrganizationQueue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganisationDtoRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/organization/queue/save:
+    post:
+      tags:
+        - Контроллер rabbitMQ для организации
+      summary: Сохраняет новую организацию в БД
+      description: Позволяет сохранять новую организацию в БД,запрос ложиться в очередь
+      operationId: saveOrganizationQueue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationSaveInDto'
+      responses:
+         200:
+            description: OK
+            content:
+              "*/*":
+                schema:
+                  $ref: '#/components/schemas/ResponseDto'
+  /api/office/{id}:
+    get:
+      tags:
+        - Офис контроллер
+      summary: Получение офиса по id
+      description: Позволяет получать офис по id
+      operationId: getOfficeById
+      parameters:
+        - name: id
+          in: path
+          description: Уникальный идентификатор
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 101
+            minimum: 1
+      responses:
+        200:
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/office/save:
+    post:
+      tags:
+        - Офис контроллер
+      description: Позволяет сохранить новый офис в БД
+      summary: Сохранение нового офиса
+      operationId: saveOffice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeInSaveDto'
+      responses:
+        200:
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/office/list:
+    post:
+      tags:
+        - Офис контроллер
+      summary: Поиск списка офисов по нескольким параметрам
+      description: Позволяет искать офис по нескольким параметрам
+      operationId: getListOfficeByRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeInListDto'
+      responses:
+        200:
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/office/update:
+    post:
+      tags:
+        - Офис контроллер
+      summary: Обновление офиса
+      description: Позволяет обновить офис в БД
+      operationId: updateOffice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeInUpdateDto'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/kafka/office/{id}:
+    get:
+      tags:
+        - Kafka Офис контроллер
+      summary: Получение офиса по Id
+      description: Позволяет получать офис по id
+      operationId: getOfficeByIdKafka
+      parameters:
+        - name: id
+          in: path
+          description: Уникальный идентификатор
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 101
+            minimum: 1
+      responses:
+        200:
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/kafka/office/save:
+    post:
+      tags:
+        - Kafka Офис контроллер
+      description: Позволяет сохранить новый офис в БД
+      summary: Сохранение нового офиса
+      operationId: saveOfficeKafka
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeInSaveDto'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/kafka/office/list:
+    post:
+      tags:
+        - Kafka Офис контроллер
+      summary: Поиск списка офисов по нескольким параметрам
+      description: Позволяет искать офис по нескольким параметрам
+      operationId: getListOfficeByRequestKafka
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeInListDto'
+      responses:
+        200:
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /api/kafka/office/update:
+    post:
+      tags:
+        - Kafka Офис контроллер
+      summary: Обновление офиса
+      description: Позволяет обновить офис в БД
+      operationId: updateOfficeKafka
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeInUpdateDto'
+      responses:
+        200:
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+components:
+  schemas:
+    ResponseDto:
+      type: object
+      properties:
+        data:
+          type: object
+    OrganizationSaveInDto:
+      description: Объект с параметрами для сохранения новой организации
+      required:
+        - name
+        - fullname
+        - inn
+        - kpp
+        - address
+      type: object
+      properties:
+        name:
+          type: string
+          description: Название организации
+          example: Новая организация
+        fullname:
+          type: string
+          description: Полное название организации
+          example: Полное название новой организации
+        inn:
+          type: integer
+          description: ИНН
+          format: int32
+          example: 88888888
+        kpp:
+          type: integer
+          description: КПП
+          format: int32
+          example: 77777777
+        address:
+          type: string
+          description: Адрес организации
+          example: город улица номер дома
+        phone:
+          type: string
+          description: Номер телефона
+          example: 0-00-00
+        isActive:
+          type: boolean
+          description: Активность
+          example: true
+    OrganisationDtoRequest:
+      type: object
+      description: Объект с параметрами для фильтрации организаций
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Название орагнизации
+          example: "СБЕР"
+        inn:
+          type: integer
+          format: int32
+          description: ИНН
+          example: 456123787
+        isActive:
+          type: boolean
+          description: Активность
+          example: true
+    OrganizationUpdateInDto:
+      type: object
+      description: Объект с параметрами для обновления организации
+      required:
+        - id
+        - name
+        - fullname
+        - inn
+        - kpp
+        - address
+        - isActive
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Уникальный идентификатор
+          example: 101
+        name:
+          type: string
+          description: Название организации
+          example: Обновленное название организации
+        fullname:
+          type: string
+          description: Полное название организации
+          example: Обновленное полное название организации
+        inn:
+          type: integer
+          format: int32
+          description: ИНН
+          example: 999999999
+        kpp:
+          type: integer
+          format: int32
+          description: КПП
+          example: 555555555
+        address:
+          type: string
+          description: Адрес
+          example: новый адрес
+        phone:
+          type: string
+          description: номер телефона
+          example: 1-11-11
+        isActive:
+          type: boolean
+          description: Активность
+          example: true
+    OfficeInSaveDto:
+      type: object
+      description: Объект с параметрами для нового офиса
+      required:
+        - orgId
+      properties:
+        orgId:
+          type: integer
+          format: int32
+          description: Уникальный идентификатор организации
+          example: 101
+          minimum: 1
+        name:
+          type: string
+          description: Название офиса
+          example: Новый офис
+        phone:
+          type: string
+          description: Номер телефона
+          example: 0-00-00
+        address:
+          type: string
+          description: Адрес
+          example: город улица номер дома
+        isActive:
+          type: boolean
+          description: Активность
+          example: true
+    OfficeInListDto:
+      type: object
+      description: Объект с фильтрами для поиска офисов
+      required:
+        - orgId
+      properties:
+        orgId:
+          type: integer
+          format: int32
+          description: Уникальный идентификатор организации
+          example: 102
+          minimum: 1
+        name:
+          type: string
+          description: Название офиса
+          example: Офис Сбера1
+        phone:
+          type: string
+          description: номер телефона
+          example: 8937987456123
+        isActive:
+          type: boolean
+          description: Активность офиса
+          example: true
+    OfficeInUpdateDto:
+      type: object
+      description: объект с параметрами для обновления офиса
+      required:
+        - id
+        - name
+        - address
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Уникальный идентификатор
+          minimum: 1
+          example: 101
+        name:
+          type: string
+          description: Название офиса
+          example: новое название офиса
+        address:
+          type: string
+          description: Адрес
+          example: город улица номер дома
+        phone:
+          type: string
+          description: номер телефона
+          example: 0-00-00
+        isActive:
+          type: boolean
+          description: Активность
+          example: true

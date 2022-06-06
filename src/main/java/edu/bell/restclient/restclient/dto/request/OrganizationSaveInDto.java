@@ -50,7 +50,7 @@ public class OrganizationSaveInDto implements Serializable {
     /**
      * номер телеофна организации
      */
-    @Schema(description = "Номер телефона", required = true, example = "0-00-00")
+    @Schema(description = "Номер телефона", example = "0-00-00")
     private String phone;
     /**
      * Поле isActive
