@@ -1,8 +1,6 @@
 package edu.bell.restclient.restclient.controller;
 
-import edu.bell.restclient.restclient.dto.request.OfficeInListDto;
-import edu.bell.restclient.restclient.dto.request.OfficeInSaveDto;
-import edu.bell.restclient.restclient.dto.request.OfficeInUpdateDto;
+
 import edu.bell.restclient.restclient.dto.response.ResponseDto;
 import edu.bell.restclient.restclient.service.RestOfficeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import edu.bell.restclient.restclient.dto.request.OfficeInListDto;
+import edu.bell.restclient.restclient.dto.request.OfficeInSaveDto;
+import edu.bell.restclient.restclient.dto.request.OfficeInUpdateDto;
 
 import javax.validation.Valid;
 
@@ -44,7 +45,7 @@ public class OfficeController {
 
     @Operation(summary = "Поиск офиса по фильтру", description = "Позволяет искать офис по нескольким параметрам")
     @PostMapping("list")
-    public ResponseDto getListOfficeByRequest(@Valid @RequestBody OfficeInListDto office) {
+    public ResponseDto getListOfficeByRequest(@Valid @RequestBody  OfficeInListDto office) {
         return restOfficeService.getListOfficeByRequest(office);
     }
 

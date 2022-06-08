@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.0.0
 info:
   title: Rest client система api
   contact:
@@ -9,19 +9,19 @@ servers:
   - url: http://localhost:8081
     description: Generated server url
 tags:
-  - name: Контроллер организации
+  - name: OrganizationController
     description: Позволяет работать с сущностью организация
-  - name: Контроллер rabbitMQ для организации
+  - name: RabbitOrganizationController
     description: Позволяет работать с сущностью организация через очередь RabbitMQ
-  - name: Офис контроллер
+  - name: OfficeController
     description: Позволяет работать с сущностью офис
-  - name: Kafka Офис контроллер
+  - name: KafkaOfficeController
     description: Позволяет работать с сущностью офис через kafka контроллер
 paths:
   /api/organization/{id}:
     get:
       tags:
-        - Контроллер организации
+        - OrganizationController
       summary: Получение организации по id
       description: Позволяет получить организацию по id
       operationId: getOrganizationById
@@ -44,7 +44,7 @@ paths:
   /api/organization/save:
     post:
       tags:
-        - Контроллер организации
+        - OrganizationController
       summary: Сохранение новой организации
       description: Позволяет сохранить новую организацию в БД
       operationId: saveOrganization
@@ -64,7 +64,7 @@ paths:
   /api/organization/list:
     post:
       tags:
-        - Контроллер организации
+        - OrganizationController
       summary: Поиск списка организаций по фильтру
       description: Позволяет найти список организаций по нескольким параметрам
       operationId: getListOrganization
@@ -84,7 +84,7 @@ paths:
   /api/organization/update:
     post:
       tags:
-        - Контроллер организации
+        - OrganizationController
       summary: Обновление организации
       description: Позволяет обновить организацию
       operationId: updateOrganization
@@ -104,7 +104,7 @@ paths:
   /api/organization/queue/{id}:
     get:
       tags:
-        - Контроллер rabbitMQ для организации
+        - RabbitOrganizationController
       summary: Поиск организации по id, запрос отправляется в очередь
       description: Позволяет получать организацию по id
       operationId: getOrganizationByIdQueue
@@ -127,12 +127,11 @@ paths:
   /api/organization/queue/list:
     post:
       tags:
-        - Контроллер rabbitMQ для организации
+        - RabbitOrganizationController
       summary: Поиск организаций по нескольким параметрам
       description: Позволяет искать организации по нескольким параметрам , запрос ложиться в очередь
       operationId: getListOrganizationQueue
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -147,27 +146,26 @@ paths:
   /api/organization/queue/save:
     post:
       tags:
-        - Контроллер rabbitMQ для организации
+        - RabbitOrganizationController
       summary: Сохраняет новую организацию в БД
       description: Позволяет сохранять новую организацию в БД,запрос ложиться в очередь
       operationId: saveOrganizationQueue
       requestBody:
-        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/OrganizationSaveInDto'
       responses:
-         200:
-            description: OK
-            content:
-              "*/*":
-                schema:
-                  $ref: '#/components/schemas/ResponseDto'
+        200:
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
   /api/office/{id}:
     get:
       tags:
-        - Офис контроллер
+        - OfficeController
       summary: Получение офиса по id
       description: Позволяет получать офис по id
       operationId: getOfficeById
@@ -191,7 +189,7 @@ paths:
   /api/office/save:
     post:
       tags:
-        - Офис контроллер
+        - OfficeController
       description: Позволяет сохранить новый офис в БД
       summary: Сохранение нового офиса
       operationId: saveOffice
@@ -210,7 +208,7 @@ paths:
   /api/office/list:
     post:
       tags:
-        - Офис контроллер
+        - OfficeController
       summary: Поиск списка офисов по нескольким параметрам
       description: Позволяет искать офис по нескольким параметрам
       operationId: getListOfficeByRequest
@@ -230,7 +228,7 @@ paths:
   /api/office/update:
     post:
       tags:
-        - Офис контроллер
+        - OfficeController
       summary: Обновление офиса
       description: Позволяет обновить офис в БД
       operationId: updateOffice
@@ -239,7 +237,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OfficeInUpdateDto'
-        required: true
       responses:
         200:
           description: OK
@@ -250,7 +247,7 @@ paths:
   /api/kafka/office/{id}:
     get:
       tags:
-        - Kafka Офис контроллер
+        - KafkaOfficeController
       summary: Получение офиса по Id
       description: Позволяет получать офис по id
       operationId: getOfficeByIdKafka
@@ -274,7 +271,7 @@ paths:
   /api/kafka/office/save:
     post:
       tags:
-        - Kafka Офис контроллер
+        - KafkaOfficeController
       description: Позволяет сохранить новый офис в БД
       summary: Сохранение нового офиса
       operationId: saveOfficeKafka
@@ -283,7 +280,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OfficeInSaveDto'
-        required: true
       responses:
         200:
           description: OK
@@ -294,7 +290,7 @@ paths:
   /api/kafka/office/list:
     post:
       tags:
-        - Kafka Офис контроллер
+        - KafkaOfficeController
       summary: Поиск списка офисов по нескольким параметрам
       description: Позволяет искать офис по нескольким параметрам
       operationId: getListOfficeByRequestKafka
@@ -314,12 +310,11 @@ paths:
   /api/kafka/office/update:
     post:
       tags:
-        - Kafka Офис контроллер
+        - KafkaOfficeController
       summary: Обновление офиса
       description: Позволяет обновить офис в БД
       operationId: updateOfficeKafka
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -328,7 +323,7 @@ paths:
         200:
           description: OK
           content:
-            "*/*":
+            application/json:
               schema:
                 $ref: '#/components/schemas/ResponseDto'
 components:
