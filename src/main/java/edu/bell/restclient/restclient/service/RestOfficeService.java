@@ -4,7 +4,8 @@ import edu.bell.restclient.restclient.config.BaseUrl;
 import edu.bell.restclient.restclient.dto.request.OfficeInListDto;
 import edu.bell.restclient.restclient.dto.request.OfficeInSaveDto;
 import edu.bell.restclient.restclient.dto.request.OfficeInUpdateDto;
-import edu.bell.restclient.restclient.dto.response.ResponseDto;
+import edu.bell.restclient.restclient.dto.request.ResponseDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,25 +22,22 @@ public class RestOfficeService {
         this.baseUrl = baseUrl;
     }
 
-    public ResponseDto getOfficeById(Integer id) {
-        return template.getForObject(baseUrl.getUrl() + url + id, ResponseDto.class);
+    public ResponseEntity<ResponseDto> getOfficeById(Integer id) {
+        return template.getForEntity(baseUrl.getUrl() + url + id, ResponseDto.class);
+
     }
 
-    public ResponseDto saveOffice(OfficeInSaveDto office) {
-        ResponseEntity<ResponseDto> responseEntity
-                = template.postForEntity(baseUrl.getUrl() + url + "save", office, ResponseDto.class);
-        return responseEntity.getBody();
+    public ResponseEntity<ResponseDto> saveOffice(OfficeInSaveDto office) {
+        return template.postForEntity(baseUrl.getUrl() + url + "save", office, ResponseDto.class);
     }
 
-    public ResponseDto getListOfficeByRequest(OfficeInListDto office) {
-        ResponseEntity<ResponseDto> responseDtoResponseEntity = template
+    public ResponseEntity<ResponseDto> getListOfficeByRequest(OfficeInListDto office) {
+        return template
                 .postForEntity(baseUrl.getUrl() + url + "list", office, ResponseDto.class);
-        return responseDtoResponseEntity.getBody();
     }
 
-    public ResponseDto updateOffice(OfficeInUpdateDto officeInUpdateDto) {
-        ResponseEntity<ResponseDto> responseDtoResponseEntity = template
+    public ResponseEntity<ResponseDto> updateOffice(OfficeInUpdateDto officeInUpdateDto) {
+        return template
                 .postForEntity(baseUrl.getUrl() + url + "update", officeInUpdateDto, ResponseDto.class);
-        return responseDtoResponseEntity.getBody();
     }
 }

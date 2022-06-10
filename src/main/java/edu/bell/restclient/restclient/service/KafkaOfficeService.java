@@ -5,10 +5,12 @@ import edu.bell.restclient.restclient.dto.request.MessageDto;
 import edu.bell.restclient.restclient.dto.request.OfficeInListDto;
 import edu.bell.restclient.restclient.dto.request.OfficeInSaveDto;
 import edu.bell.restclient.restclient.dto.request.OfficeInUpdateDto;
-import edu.bell.restclient.restclient.dto.response.ResponseDto;
+import edu.bell.restclient.restclient.dto.request.ResponseDto;
 import edu.bell.restclient.restclient.dto.response.SuccessDto;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -27,23 +29,23 @@ public class KafkaOfficeService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public ResponseDto getOfficeById(Integer id) {
+    public ResponseEntity<ResponseDto> getOfficeById(Integer id) {
         ResponseDto responseDto = new ResponseDto();
         if (storage.containsKey(id)) {
             Object o = storage.get(id);
             if (o == null) {
                 responseDto.setData(getSuccessDto(id));
-                return responseDto;
+                return new ResponseEntity<>(responseDto, HttpStatus.OK);
             }
             responseDto.setData(o);
-            return responseDto;
+            return new ResponseEntity<>(responseDto,HttpStatus.OK);
         }
         MessageDto messageDto = getMessageDto(id, "get");
         kafkaTemplate.send(KafkaTopicConfig.QUEUE_OFFICE, messageDto);
         log.log(Level.INFO, "В очередь отправлен объект: " + messageDto);
         storage.put(messageId, null);
         responseDto.setData(getSuccessDto(messageDto.getId()));
-        return responseDto;
+        return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
     /**
@@ -61,30 +63,30 @@ public class KafkaOfficeService {
         log.log(Level.INFO, "В хранилище добавлен объект: " + body);
     }
 
-    public ResponseDto saveOffice(OfficeInSaveDto office) {
+    public ResponseEntity<ResponseDto> saveOffice(OfficeInSaveDto office) {
         MessageDto messageDto = getMessageDto(office, "save");
         kafkaTemplate.send(KafkaTopicConfig.QUEUE_OFFICE, messageDto);
         log.log(Level.INFO, "В очередь отправлен объект: " + messageDto);
         ResponseDto responseDto = new ResponseDto();
         responseDto.setData("Офис успешно создан.");
-        return responseDto;
+        return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
-    public ResponseDto getListOfficeByRequest(OfficeInListDto office) {
+    public ResponseEntity<ResponseDto> getListOfficeByRequest(OfficeInListDto office) {
         MessageDto messageDto = getMessageDto(office, "list");
         kafkaTemplate.send(KafkaTopicConfig.QUEUE_OFFICE, messageDto);
         storage.put(messageId, null);
         log.log(Level.INFO, "В очередь отправлен объект: " + messageDto);
-        return getResponseDto(messageId);
+        return new ResponseEntity<>(getResponseDto(messageId),HttpStatus.OK);
     }
 
-    public ResponseDto updateOffice(OfficeInUpdateDto officeInUpdateDto) {
+    public ResponseEntity<ResponseDto> updateOffice(OfficeInUpdateDto officeInUpdateDto) {
         MessageDto messageDto = getMessageDto(officeInUpdateDto, "update");
         kafkaTemplate.send(KafkaTopicConfig.QUEUE_OFFICE, messageDto);
         log.log(Level.INFO, "В очередь отправлен объект: " + messageDto);
         ResponseDto responseDto = new ResponseDto();
         responseDto.setData("Офис успешно обновлен.");
-        return responseDto;
+        return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
     private SuccessDto getSuccessDto(int messageId) {

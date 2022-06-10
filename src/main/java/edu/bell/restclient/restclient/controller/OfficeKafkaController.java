@@ -3,24 +3,13 @@ package edu.bell.restclient.restclient.controller;
 import edu.bell.restclient.restclient.dto.request.OfficeInListDto;
 import edu.bell.restclient.restclient.dto.request.OfficeInSaveDto;
 import edu.bell.restclient.restclient.dto.request.OfficeInUpdateDto;
-import edu.bell.restclient.restclient.dto.response.ResponseDto;
+import edu.bell.restclient.restclient.dto.request.ResponseDto;
 import edu.bell.restclient.restclient.service.KafkaOfficeService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-
-@Tag(description = "Позволяет работать с сущностью офис через очередь Kafka", name = "Kafka офис контроллер")
 @RestController
-@RequestMapping("/api/kafka/office/")
-public class OfficeKafkaController {
+public class OfficeKafkaController implements KafkaOfficeControllerApi {
 
     private final KafkaOfficeService kafkaOfficeService;
 
@@ -28,30 +17,23 @@ public class OfficeKafkaController {
         this.kafkaOfficeService = kafkaOfficeService;
     }
 
-    @Operation(summary = "Получение офиса по id", description = "Позволяет получить офис по id, используя kafka")
-    @GetMapping("{id}")
-    public ResponseDto getOfficeByIdKafka(@PathVariable @Parameter(
-            description = "Уникальный идентификатор офиса",
-            example = "101") Integer id) {
-        return kafkaOfficeService.getOfficeById(id);
-
+    @Override
+    public ResponseEntity<ResponseDto> getListOfficeByRequestKafka(OfficeInListDto officeInListDto) {
+        return kafkaOfficeService.getListOfficeByRequest(officeInListDto);
     }
 
-    @Operation(summary = "Сохранение нового офиса", description = "Сохраняет новый офис в БД")
-    @PostMapping("save")
-    public ResponseDto saveOfficeKafka(@Valid @RequestBody OfficeInSaveDto office) {
+    @Override
+    public ResponseEntity<ResponseDto> getOfficeByIdKafka(Integer id) {
+        return kafkaOfficeService.getOfficeById(id);
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> saveOfficeKafka(OfficeInSaveDto office) {
         return kafkaOfficeService.saveOffice(office);
     }
 
-    @Operation(summary = "Поиск офиса по фильтру", description = "Позволяет искать офис по нескольким параметрам")
-    @PostMapping("list")
-    public ResponseDto getListOfficesByRequestKafka(@Valid @RequestBody OfficeInListDto office) {
-        return kafkaOfficeService.getListOfficeByRequest(office);
-    }
-
-    @Operation(summary = "Обновление офиса", description = "Обновляет офис в БД")
-    @PostMapping("update")
-    public ResponseDto updateOfficeKafka(@Valid @RequestBody OfficeInUpdateDto officeInUpdateDto) {
+    @Override
+    public ResponseEntity<ResponseDto> updateOfficeKafka(OfficeInUpdateDto officeInUpdateDto) {
         return kafkaOfficeService.updateOffice(officeInUpdateDto);
     }
 }
