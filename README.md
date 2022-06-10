@@ -12,4 +12,4 @@ https://gist.github.com/sgoshaa/bdc504ee3acdc3682d0837b482633411
 # 3. И запустить приложение https://github.com/sgoshaa/bellschool.git
 
 # Или скачать оба приложения и сделать Docker-compose.yml, со следующим содержанием:
-
+https://gist.github.com/sgoshaa/f57271076cfca53b6ca647a79e67c0b9
