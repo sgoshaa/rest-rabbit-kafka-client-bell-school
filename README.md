@@ -1,7 +1,8 @@
 # rest_rabbit_kafka_client_bell_school
 Проект который использует api проекта https://github.com/sgoshaa/bellschool.git 
 
-В нем реализовано общение с сервисом через RestTemplate ,RabbitMQ , Kafka
+В нем реализовано общение с сервисом через RestTemplate ,RabbitMQ , Kafka.
+Входящие Dto генерируются с помощью OpenApi
 
 ## Для его работы требуется:
 ### 1. Запустить RabbitMQ, это можно сделать в Docker выполнив команду:
