@@ -3,11 +3,11 @@
 
 В нем реализовано общение с сервисом через RestTemplate ,RabbitMQ , Kafka
 
-#Для его работы требуется:
-1.запустить RabbitMQ, это можно сделать в Docker выполнив команду:
+# Для его работы требуется:
+# 1.запустить RabbitMQ, это можно сделать в Docker выполнив команду:
 docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.10-management
 или установить на ПК;
-2.Запустить Kafka , это можно сделать создав Docker-compose.yml, со следующим содержанием:
+# 2.Запустить Kafka , это можно сделать создав Docker-compose.yml, со следующим содержанием:
 version: "2"
 
 services:
@@ -37,4 +37,4 @@ volumes:
     driver: local
   kafka_data:
     driver: local
-3.И заупустить приложение https://github.com/sgoshaa/bellschool.git 
+# 3.И заупустить приложение https://github.com/sgoshaa/bellschool.git 
